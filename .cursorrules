@@ -1,0 +1,159 @@
+# KAF81 Website - Cursor Rules
+
+## Project Overview
+This is a static website for KAF81 (KASI 1981 Alumni Foundation) built with vanilla HTML, CSS, and JavaScript. No frameworks or libraries are used except for Google Fonts.
+
+## Technology Stack
+- HTML5 (Semantic)
+- CSS3 (Vanilla, no preprocessors)
+- JavaScript (Vanilla ES6+, no frameworks)
+- Supabase (for contact form backend only)
+
+## Code Style and Structure
+
+### HTML
+- Use semantic HTML5 elements (`<header>`, `<nav>`, `<main>`, `<section>`, `<article>`, `<aside>`, `<footer>`)
+- Proper heading hierarchy (h1 → h2 → h3, no skipping levels)
+- Always include `lang="en"` on `<html>` tag
+- Include viewport meta tag: `<meta name="viewport" content="width=device-width, initial-scale=1.0">`
+- All images must have descriptive `alt` attributes
+- Use descriptive link text (avoid "click here")
+- Include skip to main content link for accessibility
+
+### CSS
+- Mobile-first responsive design approach
+- Use CSS custom properties (CSS variables) for theming
+- Typography:
+  - Headings: `font-family: 'Playfair Display', serif;`
+  - Body: `font-family: 'Quicksand', sans-serif;`
+- Use CSS Grid and Flexbox for layouts
+- Use meaningful class names (BEM-like but not strict BEM)
+- Include focus states for all interactive elements
+- Support `prefers-reduced-motion` media query
+- Ensure color contrast ratio ≥ 4.5:1 for accessibility
+
+### JavaScript
+- Use vanilla JavaScript only (no libraries or frameworks)
+- Use `'use strict';` in all JS files
+- Use the `function` keyword for pure functions
+- Use descriptive variable names with auxiliary verbs (e.g., `isLoading`, `hasError`)
+- Prefer const over let, avoid var
+- Use curly braces for all conditionals
+- Write modular, reusable functions
+- Use IIFE pattern where appropriate for scoping
+
+## Code Organization
+
+### File Structure
+```
+kaf81.org/
+├── index.html
+├── [other].html
+├── css/
+│   └── style.css
+├── js/
+│   ├── main.js
+│   ├── contact.js
+│   └── form-validation.js
+└── images/
+```
+
+### Naming Conventions
+- HTML files: lowercase with dashes (e.g., `apply-online.html`)
+- CSS classes: lowercase with dashes (e.g., `.form-group`)
+- JavaScript files: lowercase with dashes (e.g., `form-validation.js`)
+- Images: lowercase with dashes (e.g., `scholarship-certificate.jpeg`)
+
+## Response Constraints
+- Do not remove any existing code unless necessary
+- Do not remove comments or commented-out code unless necessary
+- Do not change the formatting of existing code unless important for new functionality
+- Do not change the formatting of imports unless necessary
+
+## Accessibility Requirements (WCAG 2.1 AA)
+- Use semantic HTML elements
+- Include ARIA labels and roles where needed
+- Ensure keyboard navigation works for all interactive elements
+- Provide visible focus indicators
+- Include skip navigation link
+- Use proper form labels and error messages
+- Maintain proper heading hierarchy
+- Ensure color contrast meets AA standards
+- Add `aria-current="page"` to current navigation items
+- Use `aria-label` for icon-only buttons
+- Include `role` attributes where semantic HTML isn't sufficient
+
+## SEO Requirements
+- Include unique meta descriptions on every page
+- Use Open Graph tags for social sharing
+- Use Twitter Card tags
+- Include canonical URLs
+- Add Schema.org structured data (JSON-LD):
+  - Organization schema on homepage
+  - FAQPage schema on FAQ page
+  - BreadcrumbList schema on all pages
+  - ContactPage schema on contact page
+- All images must have descriptive alt text
+- Use descriptive, keyword-rich page titles
+- Include XML sitemap and robots.txt
+
+## Performance Optimization (Lighthouse 100)
+- Implement lazy loading for images (`loading="lazy"`)
+- Optimize images (appropriate formats, sizes)
+- Load Google Fonts with `display=swap` and preconnect
+- Minimize and optimize CSS/JS (production)
+- Use efficient CSS selectors
+- Avoid render-blocking resources
+- Defer non-critical JavaScript
+- Use efficient data structures and algorithms
+- Optimize network requests
+
+## Form Handling
+- Client-side validation before submission
+- Accessible error messages (ARIA live regions)
+- Loading states during submission
+- Supabase integration for contact form
+- Use vanilla fetch() API (no axios or other libraries)
+
+## Best Practices
+- Write concise, technical code
+- Prefer functional and declarative programming patterns
+- Avoid code duplication - use iteration and modularization
+- Use descriptive variable names
+- Structure files logically: HTML structure, then styling, then behavior
+- Favor simplicity over cleverness
+- Write code that is easy to understand and maintain
+
+## Browser Support
+- Support modern browsers (last 2 versions of Chrome, Firefox, Safari, Edge)
+- Use feature detection where needed
+- Provide fallbacks for unsupported features
+
+## Testing Considerations
+- Test keyboard navigation
+- Test with screen readers
+- Test on mobile devices
+- Verify Lighthouse scores (aim for 100 in all categories)
+- Test form validation and submission
+- Verify all links work correctly
+- Check color contrast ratios
+
+## Documentation
+- Update README.md when adding new features
+- Comment complex code logic
+- Document any external dependencies or setup requirements
+
+## Git Practices
+- Write clear, descriptive commit messages
+- Don't commit temporary or build files
+- Keep commits focused and atomic
+
+## Specific Rules for This Project
+- Do not add any CSS frameworks (Bootstrap, Tailwind, etc.)
+- Do not add any JavaScript frameworks or libraries (React, Vue, jQuery, etc.)
+- Do not use CSS preprocessors (SASS, LESS, etc.)
+- Keep all code in the repository - no build steps required
+- Use only HTML, CSS, and vanilla JavaScript
+- Google Fonts are allowed (external resource)
+- Supabase is allowed (backend service for contact form only)
+

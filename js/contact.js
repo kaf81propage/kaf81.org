@@ -1,0 +1,198 @@
+// Contact form handling with Supabase integration
+
+(function() {
+  'use strict';
+
+  // Supabase configuration - These should be set as environment variables in production
+  // For static sites, they can be set in a config object or loaded from a secure endpoint
+  const SUPABASE_CONFIG = {
+    url: window.SUPABASE_URL || '', // Set this in HTML or via environment
+    anonKey: window.SUPABASE_ANON_KEY || '' // Set this in HTML or via environment
+  };
+
+  /**
+   * Initialize contact form
+   */
+  function initContactForm() {
+    const form = document.getElementById('contact-form');
+    if (!form) {
+      return;
+    }
+
+    // Initialize form validation
+    if (window.FormValidation) {
+      window.FormValidation.initFormValidation(form);
+    }
+
+    // Handle form submission
+    form.addEventListener('submit', handleFormSubmit);
+
+    // Setup live region for announcements
+    const liveRegion = document.createElement('div');
+    liveRegion.id = 'form-announcements';
+    liveRegion.setAttribute('role', 'status');
+    liveRegion.setAttribute('aria-live', 'polite');
+    liveRegion.setAttribute('aria-atomic', 'true');
+    liveRegion.className = 'visually-hidden';
+    form.appendChild(liveRegion);
+  }
+
+  /**
+   * Handle form submission
+   * @param {Event} event - Submit event
+   */
+  async function handleFormSubmit(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const submitButton = form.querySelector('button[type="submit"]');
+    const liveRegion = document.getElementById('form-announcements');
+    
+    // Validate form
+    if (window.FormValidation && !window.FormValidation.validateForm(form)) {
+      announce(liveRegion, 'Please fix the errors in the form before submitting.');
+      return;
+    }
+
+    // Check Supabase configuration
+    if (!SUPABASE_CONFIG.url || !SUPABASE_CONFIG.anonKey) {
+      showError(form, 'Contact form is not properly configured. Please contact us directly at info@kaf81.org');
+      announce(liveRegion, 'Form configuration error. Please contact us directly.');
+      return;
+    }
+
+    // Disable submit button
+    setLoadingState(form, true);
+
+    // Collect form data
+    const formData = {
+      full_name: form.querySelector('[name="full_name"]').value.trim(),
+      email: form.querySelector('[name="email"]').value.trim(),
+      mobile: form.querySelector('[name="mobile"]').value.trim(),
+      message: form.querySelector('[name="message"]').value.trim(),
+      created_at: new Date().toISOString()
+    };
+
+    try {
+      // Submit to Supabase
+      const response = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/contacts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_CONFIG.anonKey,
+          'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`,
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit form');
+      }
+
+      // Success
+      showSuccess(form);
+      announce(liveRegion, 'Your message has been sent successfully. We will get back to you soon.');
+      form.reset();
+      
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      showError(form, 'Sorry, there was an error submitting your message. Please try again or contact us directly at info@kaf81.org');
+      announce(liveRegion, 'Error submitting form. Please try again or contact us directly.');
+    } finally {
+      setLoadingState(form, false);
+    }
+  }
+
+  /**
+   * Show success message
+   * @param {HTMLFormElement} form - Form element
+   */
+  function showSuccess(form) {
+    // Remove existing messages
+    const existingMessage = form.querySelector('.success-message, .error-message');
+    if (existingMessage) {
+      existingMessage.remove();
+    }
+
+    // Add success message
+    const successMessage = document.createElement('div');
+    successMessage.className = 'success-message';
+    successMessage.setAttribute('role', 'alert');
+    successMessage.textContent = 'Thank you! Your message has been sent successfully. We will get back to you soon.';
+    form.insertBefore(successMessage, form.firstChild);
+
+    // Remove message after 5 seconds
+    setTimeout(function() {
+      successMessage.remove();
+    }, 5000);
+  }
+
+  /**
+   * Show error message
+   * @param {HTMLFormElement} form - Form element
+   * @param {string} message - Error message
+   */
+  function showError(form, message) {
+    // Remove existing messages
+    const existingMessage = form.querySelector('.success-message, .error-message');
+    if (existingMessage) {
+      existingMessage.remove();
+    }
+
+    // Add error message
+    const errorMessage = document.createElement('div');
+    errorMessage.className = 'error-message';
+    errorMessage.setAttribute('role', 'alert');
+    errorMessage.style.cssText = 'padding: 1rem; background-color: #fee; border: 1px solid #fcc; border-radius: 4px; margin-bottom: 1rem;';
+    errorMessage.textContent = message;
+    form.insertBefore(errorMessage, form.firstChild);
+  }
+
+  /**
+   * Set loading state
+   * @param {HTMLFormElement} form - Form element
+   * @param {boolean} isLoading - Loading state
+   */
+  function setLoadingState(form, isLoading) {
+    const submitButton = form.querySelector('button[type="submit"]');
+    const fields = form.querySelectorAll('input, textarea, select, button');
+    
+    if (isLoading) {
+      form.classList.add('loading');
+      submitButton.disabled = true;
+      submitButton.textContent = 'Sending...';
+      fields.forEach(function(field) {
+        field.disabled = true;
+      });
+    } else {
+      form.classList.remove('loading');
+      submitButton.disabled = false;
+      submitButton.textContent = 'Submit';
+      fields.forEach(function(field) {
+        field.disabled = false;
+      });
+    }
+  }
+
+  /**
+   * Announce message to screen readers
+   * @param {HTMLElement} liveRegion - Live region element
+   * @param {string} message - Message to announce
+   */
+  function announce(liveRegion, message) {
+    if (liveRegion) {
+      liveRegion.textContent = message;
+      // Clear after a moment so the message can be announced again if needed
+      setTimeout(function() {
+        liveRegion.textContent = '';
+      }, 1000);
+    }
+  }
+
+  // Initialize on DOM load
+  document.addEventListener('DOMContentLoaded', function() {
+    initContactForm();
+  });
+})();
+
