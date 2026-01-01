@@ -1,0 +1,26 @@
+Create a Supabase database table and setup for the KAF81 contact form with the following requirements:
+
+1. Create a table named "contacts" with the following schema:
+   - id: UUID (primary key, auto-generated)
+   - full_name: TEXT (required, NOT NULL)
+   - email: TEXT (required, NOT NULL)
+   - mobile: TEXT (required, NOT NULL)
+   - message: TEXT (required, NOT NULL)
+   - created_at: TIMESTAMP WITH TIME ZONE (default: NOW())
+
+2. Enable Row Level Security (RLS) on the contacts table
+
+3. Create RLS policies:
+   - Policy 1: Allow public/anonymous INSERT operations (for form submissions)
+   - Policy 2 (optional): Allow authenticated users to SELECT/read records
+
+4. The table should accept data from a REST API endpoint: POST /rest/v1/contacts
+
+Please provide:
+- The SQL commands to create the table
+- The SQL commands to enable RLS
+- The SQL commands to create the necessary policies
+- Instructions on where to find the Project URL and anon public key
+
+This is for a contact form that will submit data using the Supabase REST API with the anon key.
+
