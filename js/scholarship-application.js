@@ -3,6 +3,14 @@
 (function() {
   'use strict';
 
+  // Application Status Configuration
+  // Set isOpen to false to close the application form
+  const APPLICATION_STATUS = {
+    isOpen: true, // Change to false to close applications
+    scholarshipYear: '2025-26',
+    closedMessage: 'Online application for KAF81 Scholarships 2025-26 is now CLOSED'
+  };
+
   // Supabase configuration
   const SUPABASE_CONFIG = {
     url: window.SUPABASE_URL || '',
@@ -10,9 +18,53 @@
   };
 
   /**
+   * Check application status and show/hide form accordingly
+   */
+  function checkApplicationStatus() {
+    const form = document.getElementById('scholarship-application-form');
+    const closedMessageContainer = document.getElementById('application-closed-message');
+    const formNote = document.querySelector('#scholarship_name + .form-note');
+
+    if (!APPLICATION_STATUS.isOpen) {
+      // Application is closed - hide form, show closed message
+      if (form) {
+        form.style.display = 'none';
+      }
+      if (closedMessageContainer) {
+        closedMessageContainer.style.display = 'block';
+      }
+      if (formNote) {
+        formNote.textContent = APPLICATION_STATUS.closedMessage;
+        formNote.style.color = '#c00';
+        formNote.style.fontWeight = '600';
+      }
+      return false; // Form should not be initialized
+    } else {
+      // Application is open - show form, hide closed message
+      if (form) {
+        form.style.display = 'block';
+      }
+      if (closedMessageContainer) {
+        closedMessageContainer.style.display = 'none';
+      }
+      if (formNote) {
+        formNote.textContent = 'Online application for KAF81 Scholarships ' + APPLICATION_STATUS.scholarshipYear + ' is now OPEN';
+        formNote.style.color = '';
+        formNote.style.fontWeight = '';
+      }
+      return true; // Form should be initialized
+    }
+  }
+
+  /**
    * Initialize scholarship application form
    */
   function initScholarshipForm() {
+    // Check if application is open before initializing
+    if (!checkApplicationStatus()) {
+      return; // Don't initialize form if application is closed
+    }
+
     const form = document.getElementById('scholarship-application-form');
     if (!form) {
       return;
@@ -48,7 +100,18 @@
     });
 
     // Handle form submission
-    form.addEventListener('submit', handleFormSubmit);
+    form.addEventListener('submit', function(event) {
+      // Double-check application status before submission
+      if (!APPLICATION_STATUS.isOpen) {
+        event.preventDefault();
+        const messagesContainer = document.getElementById('form-messages');
+        const liveRegion = document.getElementById('form-announcements');
+        showMessage(messagesContainer, APPLICATION_STATUS.closedMessage + '. Applications are no longer being accepted.', 'error');
+        announce(liveRegion, 'Applications are closed.');
+        return false;
+      }
+      handleFormSubmit(event);
+    });
 
     // Setup live region for announcements
     const liveRegion = document.createElement('div');
