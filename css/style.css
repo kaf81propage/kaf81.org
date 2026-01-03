@@ -415,6 +415,10 @@ form {
   margin: var(--spacing-lg) 0;
 }
 
+.scholarship-form {
+  max-width: 800px;
+}
+
 .form-group {
   margin-bottom: var(--spacing-md);
 }
@@ -461,12 +465,96 @@ textarea {
   display: block;
 }
 
+input.error,
+select.error,
+textarea.error {
+  border-color: var(--accent-color);
+}
+
+input.error:focus,
+select.error:focus,
+textarea.error:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
 .success-message {
   background-color: #10b981;
   color: white;
   padding: var(--spacing-sm);
   border-radius: 4px;
   margin: var(--spacing-md) 0;
+}
+
+/* Scholarship Form Specific Styles */
+fieldset {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: var(--spacing-lg);
+  margin: var(--spacing-lg) 0;
+  background-color: var(--bg-light);
+}
+
+legend {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  padding: 0 var(--spacing-sm);
+}
+
+.required {
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+.form-note {
+  font-size: 0.875rem;
+  color: var(--text-light);
+  margin-top: var(--spacing-xs);
+  font-style: italic;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  cursor: pointer;
+}
+
+.form-notes {
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 4px;
+  padding: var(--spacing-md);
+  margin: var(--spacing-lg) 0;
+}
+
+.form-notes ul {
+  margin-left: var(--spacing-lg);
+  margin-top: var(--spacing-sm);
+}
+
+.form-notes li {
+  margin-bottom: var(--spacing-xs);
+}
+
+#form-messages {
+  margin-bottom: var(--spacing-md);
 }
 
 /* Images */
