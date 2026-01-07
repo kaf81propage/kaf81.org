@@ -87,7 +87,12 @@
       });
 
       if (!response.ok) {
-        throw new Error('Failed to submit form');
+        // Get detailed error message from Supabase
+        const errorData = await response.json().catch(function() {
+          return { message: 'Failed to submit form', code: response.status };
+        });
+        console.error('Supabase error:', errorData);
+        throw new Error(errorData.message || errorData.hint || `Failed to submit form (${response.status})`);
       }
 
       // Success
