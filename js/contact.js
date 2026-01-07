@@ -3,13 +3,6 @@
 (function() {
   'use strict';
 
-  // Supabase configuration - These should be set as environment variables in production
-  // For static sites, they can be set in a config object or loaded from a secure endpoint
-  const SUPABASE_CONFIG = {
-    url: window.SUPABASE_URL || '', // Set this in HTML or via environment
-    anonKey: window.SUPABASE_ANON_KEY || '' // Set this in HTML or via environment
-  };
-
   /**
    * Initialize contact form
    */
@@ -55,7 +48,7 @@
     }
 
     // Check Supabase configuration
-    if (!SUPABASE_CONFIG.url || !SUPABASE_CONFIG.anonKey) {
+    if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
       showError(form, 'Contact form is not properly configured. Please contact us directly at info@kaf81.org');
       announce(liveRegion, 'Form configuration error. Please contact us directly.');
       return;
@@ -75,12 +68,12 @@
 
     try {
       // Submit to Supabase
-      const response = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/contacts`, {
+      const response = await fetch(`${window.SUPABASE_URL}/rest/v1/contacts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'apikey': SUPABASE_CONFIG.anonKey,
-          'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`,
+          'apikey': window.SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
           'Prefer': 'return=representation'
         },
         body: JSON.stringify(formData)
