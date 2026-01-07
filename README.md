@@ -142,4 +142,4 @@ Modern browsers (last 2 versions):
 
 ## License
 
-© 2024. KASI 1981 ALUMNI FOUNDATION. All Rights Reserved.
+© 2026. KASI 1981 ALUMNI FOUNDATION. All Rights Reserved.
