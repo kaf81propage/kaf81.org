@@ -7,7 +7,7 @@ This is a static website for KAF81 (KASI 1981 Alumni Foundation) built with vani
 - HTML5 (Semantic)
 - CSS3 (Vanilla, no preprocessors)
 - JavaScript (Vanilla ES6+, no frameworks)
-- Supabase (for contact form backend only)
+- Supabase (for contact form and scholarship application form backend)
 
 ## Code Style and Structure
 
@@ -48,13 +48,18 @@ This is a static website for KAF81 (KASI 1981 Alumni Foundation) built with vani
 ```
 kaf81.org/
 ├── index.html
+├── apply.html              # Closed application page
+├── apply-online.html       # Open application form page
+├── apply-online.md         # Plan for opening applications
+├── apply-offline.md        # Plan for closing applications
 ├── [other].html
 ├── css/
 │   └── style.css
 ├── js/
 │   ├── main.js
 │   ├── contact.js
-│   └── form-validation.js
+│   ├── form-validation.js
+│   └── scholarship-application.js
 └── images/
 ```
 
@@ -112,8 +117,11 @@ kaf81.org/
 - Client-side validation before submission
 - Accessible error messages (ARIA live regions)
 - Loading states during submission
-- Supabase integration for contact form
+- Supabase integration for contact form and scholarship application form
 - Use vanilla fetch() API (no axios or other libraries)
+- Validate IIT-BHU email format (@itbhu.ac.in) for scholarship applications
+- Validate checkbox groups (min/max selections) for funding sources and previous scholarships
+- Handle multi-select fields by joining values with commas for database storage
 
 ## Best Practices
 - Write concise, technical code
@@ -148,6 +156,36 @@ kaf81.org/
 - Don't commit temporary or build files
 - Keep commits focused and atomic
 
+## Application State Management
+- Use two separate HTML files for application open/closed states:
+  - `apply.html` - Display when applications are CLOSED (shows closed message)
+  - `apply-online.html` - Display when applications are OPEN (shows application form)
+- Do NOT use JavaScript toggles for open/closed state - manually update links when needed
+- Use plan files (`apply-online.md` and `apply-offline.md`) as guides for switching states
+- When switching states, update:
+  - Homepage hero button link and text
+  - Navigation links in all HTML files
+  - Text links in content sections
+- Keep both HTML files in repository - switch by updating links, not by hiding/showing elements
+
+## Scholarship Application Form
+- Form submits to Supabase `scholarship_applications` table
+- Required fields: first_name, surname, roll_number, mobile_no, email_iit_bhu
+- Email validation: email_iit_bhu must match @itbhu.ac.in domain pattern
+- Conditional fields: JEE ranks for 1st year students, CPI for other years
+- Multi-select fields: funding_sources and previous_kaf81_scholarship stored as comma-separated values
+- Convert 0 values to null for optional numeric fields (JEE ranks, CPI, marks)
+- Handle duplicate application errors gracefully with user-friendly messages
+
+## Security and Public Repository
+- Supabase anon keys are public by design (safe for client-side code)
+- Sanitize documentation files (`.md`, `.sql`, `.txt`) before committing:
+  - Replace real project IDs with placeholders (e.g., `YOUR_PROJECT_ID`)
+  - Replace real API keys in docs with placeholders (e.g., `YOUR_ANON_KEY`)
+- HTML files may contain actual Supabase credentials (anon keys) - this is acceptable as they're public by design
+- Never commit service_role keys or other private credentials
+- Use Row Level Security (RLS) policies in Supabase to protect data, not by hiding keys
+
 ## Specific Rules for This Project
 - Do not add any CSS frameworks (Bootstrap, Tailwind, etc.)
 - Do not add any JavaScript frameworks or libraries (React, Vue, jQuery, etc.)
@@ -155,5 +193,5 @@ kaf81.org/
 - Keep all code in the repository - no build steps required
 - Use only HTML, CSS, and vanilla JavaScript
 - Google Fonts are allowed (external resource)
-- Supabase is allowed (backend service for contact form only)
+- Supabase is allowed (backend service for contact form and scholarship applications)
 

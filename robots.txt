@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: http://www.kaf81.org/sitemap.xml
+Sitemap: https://kaf81.org/sitemap.xml
 
 # Disallow admin or private areas if any (none currently)
 # Disallow: /admin/
