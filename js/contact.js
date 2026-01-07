@@ -81,10 +81,21 @@
 
       if (!response.ok) {
         // Get detailed error message from Supabase
-        const errorData = await response.json().catch(function() {
-          return { message: 'Failed to submit form', code: response.status };
-        });
+        let errorData;
+        const responseText = await response.text();
+        try {
+          errorData = JSON.parse(responseText);
+        } catch (e) {
+          // If response is not JSON, create error object from status and text
+          errorData = { 
+            message: responseText || 'Failed to submit form', 
+            code: response.status,
+            statusText: response.statusText
+          };
+        }
         console.error('Supabase error:', errorData);
+        console.error('Response status:', response.status);
+        console.error('Response text:', responseText);
         throw new Error(errorData.message || errorData.hint || `Failed to submit form (${response.status})`);
       }
 
