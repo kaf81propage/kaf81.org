@@ -13,7 +13,7 @@ This means the Row Level Security (RLS) policy is blocking the INSERT operation.
 
 Run the SQL commands in `SUPABASE_RLS_FIX.sql` in your Supabase SQL Editor:
 
-1. Go to: https://supabase.com/dashboard/project/bryrpynxoapfgdvexxrc/sql
+1. Go to: https://supabase.com/dashboard/project/YOUR_PROJECT_ID/sql
 2. Click **New query**
 3. Copy and paste all SQL from `SUPABASE_RLS_FIX.sql`
 4. Click **Run**
@@ -144,9 +144,9 @@ After running the fix:
 You can test the API directly using curl:
 
 ```bash
-curl -X POST 'https://bryrpynxoapfgdvexxrc.supabase.co/rest/v1/contacts' \
-  -H "apikey: sb_publishable_hOjOChse12ZWcCTjLb-5nw_M-ocpfmQ" \
-  -H "Authorization: Bearer sb_publishable_hOjOChse12ZWcCTjLb-5nw_M-ocpfmQ" \
+curl -X POST 'https://YOUR_PROJECT_ID.supabase.co/rest/v1/contacts' \
+  -H "apikey: YOUR_ANON_KEY" \
+  -H "Authorization: Bearer YOUR_ANON_KEY" \
   -H "Content-Type: application/json" \
   -H "Prefer: return=representation" \
   -d '{
@@ -164,7 +164,7 @@ If this returns a 201 Created status, the policy is working correctly.
 If you're still getting errors after following these steps:
 
 1. **Check Supabase Logs:**
-   - Go to: https://supabase.com/dashboard/project/bryrpynxoapfgdvexxrc/logs
+   - Go to: https://supabase.com/dashboard/project/YOUR_PROJECT_ID/logs
    - Check API logs for detailed error messages
 
 2. **Verify API Key:**
@@ -172,7 +172,7 @@ If you're still getting errors after following these steps:
    - Check in: Settings → API → anon public key
 
 3. **Check Table Structure:**
-   - Verify the table exists: https://supabase.com/dashboard/project/bryrpynxoapfgdvexxrc/editor
+   - Verify the table exists: https://supabase.com/dashboard/project/YOUR_PROJECT_ID/editor
    - Check column names match exactly: full_name, email, mobile, message, created_at
 
 4. **Check RLS Status:**

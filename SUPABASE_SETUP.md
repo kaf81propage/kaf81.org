@@ -1,10 +1,10 @@
 # Supabase Database Setup Instructions for KAF81 Contact Form
 
-Follow these instructions to set up the database table in your Supabase project at: https://supabase.com/dashboard/project/bryrpynxoapfgdvexxrc
+Follow these instructions to set up the database table in your Supabase project.
 
 ## Step 1: Create the Contacts Table
 
-1. Go to your Supabase project dashboard: https://supabase.com/dashboard/project/bryrpynxoapfgdvexxrc
+1. Go to your Supabase project dashboard: https://supabase.com/dashboard/project/YOUR_PROJECT_ID
 2. Navigate to **SQL Editor** from the left sidebar
 3. Click **New query**
 4. Copy and paste the following SQL code:
@@ -74,7 +74,7 @@ CREATE POLICY "Allow authenticated reads" ON contacts
 1. Go to **Project Settings** (gear icon in left sidebar)
 2. Click on **API** in the settings menu
 3. Find the following values:
-   - **Project URL**: Something like `https://bryrpynxoapfgdvexxrc.supabase.co`
+   - **Project URL**: Something like `https://YOUR_PROJECT_ID.supabase.co`
    - **anon public key**: This is your public/anonymous key (starts with `eyJ...`)
 
 ## Step 5: Update the Contact Form Configuration
@@ -88,13 +88,13 @@ Update the `contact.html` file with your Supabase credentials:
 ```javascript
 <script>
   // Configure Supabase connection
-  window.SUPABASE_URL = 'https://bryrpynxoapfgdvexxrc.supabase.co'; // Replace with your Project URL
+  window.SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co'; // Replace with your Project URL
   window.SUPABASE_ANON_KEY = 'your-anon-key-here'; // Replace with your anon public key
 </script>
 ```
 
 Replace:
-- `https://bryrpynxoapfgdvexxrc.supabase.co` with your actual Project URL from Step 4
+- `https://YOUR_PROJECT_ID.supabase.co` with your actual Project URL from Step 4
 - `your-anon-key-here` with your actual anon public key from Step 4
 
 ## Step 6: Test the Contact Form
