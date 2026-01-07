@@ -557,23 +557,6 @@ legend {
   margin-bottom: var(--spacing-md);
 }
 
-/* Application Closed Message */
-.application-closed {
-  padding: 1.5rem;
-  background-color: #fee;
-  border: 2px solid #fcc;
-  border-radius: 8px;
-  margin: var(--spacing-lg) 0;
-  text-align: center;
-}
-
-.application-closed p {
-  margin: 0;
-  font-weight: 600;
-  color: #c00;
-  font-size: 1.125rem;
-}
-
 /* Images */
 img {
   max-width: 100%;
