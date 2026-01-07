@@ -73,7 +73,6 @@
         headers: {
           'Content-Type': 'application/json',
           'apikey': window.SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
           'Prefer': 'return=representation'
         },
         body: JSON.stringify(formData)
