@@ -259,7 +259,23 @@
         const errorData = await response.json().catch(function() {
           return { message: 'Failed to submit application' };
         });
+        
+        // Track failure with GA4
+        if (window.GA4FormTracking) {
+          window.GA4FormTracking.trackFailure(form, new Error(errorData.message || 'Failed to submit application'), {
+            status: response.status,
+            statusText: response.statusText,
+            type: 'api_error',
+            code: response.status
+          });
+        }
+        
         throw new Error(errorData.message || 'Failed to submit application');
+      }
+
+      // Track success with GA4
+      if (window.GA4FormTracking) {
+        window.GA4FormTracking.trackSuccess(form, formData);
       }
 
       // Success
@@ -275,12 +291,41 @@
       let errorMessage = 'Sorry, there was an error submitting your application. Please try again or contact us directly at info@kaf81.org';
       
       // Check for duplicate application error
-      if (error.message && error.message.includes('duplicate') || error.message.includes('unique')) {
+      if (error.message && (error.message.includes('duplicate') || error.message.includes('unique'))) {
         errorMessage = 'An application with this email or roll number already exists. If you need to submit another application, please contact us at info@kaf81.org';
+        
+        // Track duplicate error specifically
+        if (window.GA4FormTracking) {
+          window.GA4FormTracking.trackFailure(form, error, {
+            status: 409,
+            type: 'duplicate_error',
+            code: 'DUPLICATE_ENTRY',
+            category: 'duplicate_submission'
+          });
+        }
+      } else {
+        // Track other errors (network, server, etc.)
+        if (window.GA4FormTracking && !error.message.includes('duplicate') && !error.message.includes('unique')) {
+          const errorDetails = {
+            status: error.status || 0,
+            type: error.name === 'TypeError' ? 'network_error' : 'api_error',
+            code: error.status || 'UNKNOWN'
+          };
+          window.GA4FormTracking.trackFailure(form, error, errorDetails);
+        }
       }
 
       showMessage(messagesContainer, errorMessage, 'error');
       announce(liveRegion, 'Error submitting application. Please try again or contact us directly.');
+      
+      // Track retry when user clicks submit again after error
+      if (window.GA4FormTracking) {
+        const retryHandler = function() {
+          window.GA4FormTracking.trackRetry(form);
+          form.removeEventListener('submit', retryHandler);
+        };
+        form.addEventListener('submit', retryHandler, { once: true });
+      }
     } finally {
       setLoadingState(form, false);
     }

@@ -17,6 +17,11 @@
       window.FormValidation.initFormValidation(form);
     }
 
+    // Initialize GA4 tracking for contact form
+    if (window.GA4FormTracking) {
+      window.GA4FormTracking.init(form);
+    }
+
     // Handle form submission
     form.addEventListener('submit', handleFormSubmit);
 
@@ -96,7 +101,26 @@
         console.error('Supabase error:', errorData);
         console.error('Response status:', response.status);
         console.error('Response text:', responseText);
+        
+        // Track failure with GA4
+        if (window.GA4FormTracking) {
+          window.GA4FormTracking.trackFailure(form, new Error(errorData.message || errorData.hint || `Failed to submit form (${response.status})`), {
+            status: response.status,
+            statusText: response.statusText,
+            type: 'api_error',
+            code: response.status
+          });
+        }
+        
         throw new Error(errorData.message || errorData.hint || `Failed to submit form (${response.status})`);
+      }
+
+      // Track success with GA4
+      if (window.GA4FormTracking) {
+        window.GA4FormTracking.trackSuccess(form, {
+          form_type: 'contact',
+          has_message: formData.message && formData.message.length > 0
+        });
       }
 
       // Success
@@ -106,8 +130,28 @@
       
     } catch (error) {
       console.error('Error submitting form:', error);
+      
+      // Track error with GA4 (for network errors, etc.)
+      if (window.GA4FormTracking && !error.message.includes('Failed to submit form')) {
+        const errorDetails = {
+          status: error.status || 0,
+          type: error.name === 'TypeError' ? 'network_error' : 'api_error',
+          code: error.status || 'UNKNOWN'
+        };
+        window.GA4FormTracking.trackFailure(form, error, errorDetails);
+      }
+      
       showError(form, 'Sorry, there was an error submitting your message. Please try again or contact us directly at info@kaf81.org');
       announce(liveRegion, 'Error submitting form. Please try again or contact us directly.');
+      
+      // Track retry when user clicks submit again after error
+      if (window.GA4FormTracking) {
+        const retryHandler = function() {
+          window.GA4FormTracking.trackRetry(form);
+          form.removeEventListener('submit', retryHandler);
+        };
+        form.addEventListener('submit', retryHandler, { once: true });
+      }
     } finally {
       setLoadingState(form, false);
     }

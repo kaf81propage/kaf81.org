@@ -186,6 +186,138 @@ kaf81.org/
 - Never commit service_role keys or other private credentials
 - Use Row Level Security (RLS) policies in Supabase to protect data, not by hiding keys
 
+## Google Analytics 4 (GA4) Integration
+
+### GA4 Setup Requirements
+- Include GA4 global site tag (gtag.js) in `<head>` section of ALL HTML pages
+- Place GA4 script immediately after viewport meta tag
+- Use async loading: `<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>`
+- Initialize dataLayer and gtag function before config
+- Replace `G-XXXXXXXXXX` with actual GA4 Measurement ID
+- GA4 script must load before any tracking modules
+
+### GA4 Script Template
+```html
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
+```
+
+### Form Tracking Requirements
+- Create `js/ga4-form-tracking.js` module for all form tracking
+- Track the following events for ALL forms:
+  1. `page_view` - Enhanced page view with form context
+  2. `form_field_focus` - When user clicks into any form field
+  3. `form_field_blur` - When user clicks out of any form field
+  4. `form_submission_attempt` - Every time user clicks Submit button
+  5. `form_submission_success` - When form successfully submits to backend
+  6. `form_submission_failure` - When form submission fails (with error details)
+  7. `form_submission_retry` - When user resubmits after a failure
+- Integrate tracking into existing form submission handlers
+- Load `ga4-form-tracking.js` before form handler scripts
+- Use `window.GA4FormTracking.init(form)` to initialize tracking
+- Call `window.GA4FormTracking.trackSuccess()` on successful submission
+- Call `window.GA4FormTracking.trackFailure()` on submission errors
+
+### Form Tracking Event Parameters
+- `form_id`: Form element ID (e.g., "contact-form", "application-form")
+- `form_name`: Human-readable form name (e.g., "Contact Form", "Application Form")
+- `attempt_number`: Sequential attempt counter
+- `time_on_form_seconds`: Time spent on form before submission
+- `fields_filled`: Number of fields with values
+- `total_fields`: Total number of form fields
+- `completion_rate`: Percentage of fields filled
+- `field_interactions_count`: Total field focus/blur events
+- `unique_fields_interacted`: Number of unique fields touched
+- For failures: `error_message`, `error_code`, `error_type`, `error_category`
+- For success: Include sanitized form data (NO PII - no emails, names, addresses)
+
+### Bot Detection and Tracking
+- Create `js/ga4-bot-tracking.js` module for bot detection
+- Detect and track AI bots, crawlers, and automated visitors
+- Include bot tracking script in `<head>` after GA4 script on ALL pages
+- Track `bot_visit` event with bot category and type
+- Enhance `page_view` events with `visitor_type: "bot"` flag
+- Bot categories to detect:
+  - AI bots (ChatGPT, Claude, Perplexity, etc.)
+  - Search engines (Googlebot, Bingbot, etc.)
+  - Social media bots (Facebook, Twitter, LinkedIn, etc.)
+  - SEO tools (Ahrefs, SEMrush, etc.)
+  - Monitoring tools (UptimeRobot, Pingdom, etc.)
+  - Generic bots (any automated tool)
+
+### GA4 Event Tracking Standards
+- Use descriptive, consistent event names (snake_case)
+- Include relevant context in event parameters
+- Never send PII (personally identifiable information) to GA4
+- Truncate error messages to 100 characters max
+- Sanitize form data before sending (remove emails, names, addresses)
+- Include timestamps for time-sensitive events
+- Use consistent parameter naming across all events
+- Add `debug_mode` parameter when debug mode is enabled
+
+### Offline Event Queuing
+- Implement localStorage-based event queue for offline scenarios
+- Queue events when gtag is unavailable or browser is offline
+- Process queued events when connection is restored
+- Limit queue size (recommended: 50 events max)
+- Set event expiration (recommended: 7 days max age)
+- Listen for online/offline events to trigger queue processing
+- Periodically check connection and process queue (every 30 seconds)
+
+### GA4 Configuration
+- Use configuration object with debug mode flag
+- Set `debugMode: true` during development, `false` in production
+- Make Measurement ID configurable
+- Allow runtime configuration updates via public API
+- Include error handling for all GA4 operations
+- Gracefully degrade if gtag is not available
+
+### Privacy and Data Handling
+- NEVER send PII to GA4 (no emails, names, phone numbers, addresses)
+- Sanitize all form data before tracking
+- Truncate user agent strings to 100 characters
+- Use aggregated data only (counts, percentages, categories)
+- Comply with GDPR and privacy regulations
+- Document data collection in privacy policy
+- Allow users to opt-out if required by law
+
+### GA4 File Structure
+```
+js/
+├── ga4-form-tracking.js    # Form interaction and submission tracking
+├── ga4-bot-tracking.js     # Bot detection and tracking
+└── [form-handler].js       # Form submission handlers (integrated with GA4)
+```
+
+### GA4 Integration Checklist
+When adding GA4 to a new static website:
+- [ ] Add GA4 global site tag to all HTML pages in `<head>`
+- [ ] Create `js/ga4-form-tracking.js` module
+- [ ] Create `js/ga4-bot-tracking.js` module
+- [ ] Integrate form tracking into all form handlers
+- [ ] Test all tracking events in browser console
+- [ ] Verify events appear in GA4 Real-Time reports
+- [ ] Test offline event queuing
+- [ ] Verify no PII is sent to GA4
+- [ ] Set `debugMode: false` for production
+- [ ] Document GA4 Measurement ID location
+
+### GA4 Testing Requirements
+- Test all event tracking in browser console
+- Verify events appear in GA4 Real-Time reports
+- Test form submission success/failure tracking
+- Test bot detection with different user agents
+- Test offline event queuing
+- Verify error handling doesn't break form functionality
+- Test with debug mode enabled/disabled
+- Verify no JavaScript errors in console
+
 ## Specific Rules for This Project
 - Do not add any CSS frameworks (Bootstrap, Tailwind, etc.)
 - Do not add any JavaScript frameworks or libraries (React, Vue, jQuery, etc.)
@@ -194,4 +326,5 @@ kaf81.org/
 - Use only HTML, CSS, and vanilla JavaScript
 - Google Fonts are allowed (external resource)
 - Supabase is allowed (backend service for contact form and scholarship applications)
+- Google Analytics 4 (gtag.js) is allowed (analytics tracking)
 
