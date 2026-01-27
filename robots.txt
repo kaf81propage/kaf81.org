@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /apply-online.html
 
 # Sitemap
 Sitemap: https://kaf81.org/sitemap.xml
